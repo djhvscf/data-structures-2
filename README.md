@@ -1,2 +1,2 @@
-# data_structures_2
+# data-structures-2
 Code from data structures course
