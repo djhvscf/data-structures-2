@@ -17,3 +17,6 @@ Factorial/build.xml
 Factorial/nbproject/build-impl.xml
 *.properties
 Factorial/nbproject/project.xml
+/Suma/nbproject/private/
+/Suma/build/
+*.xml
