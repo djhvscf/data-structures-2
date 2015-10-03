@@ -18,11 +18,11 @@ public class Suma {
         System.out.println(suma(3));
     }
     
-    private static double suma(double n) {
-        if (n == 0) {
-            return 0;
+    private static int suma(int n) {
+        if (n == 1) {
+            return 1;
         } else {
-            return 1 + suma(n-1);
+            return n + suma(n-1);
         }
     }
 }
