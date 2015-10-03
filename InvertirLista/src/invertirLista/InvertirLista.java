@@ -1,8 +1,8 @@
-package invertir;
+package invertirLista;
 
 import java.util.ArrayList;
 
-public class Invertir {
+public class InvertirLista {
 
     public static void main(String[] args) {
         ArrayList<Integer> lista = crearLista(3);
@@ -11,6 +11,8 @@ public class Invertir {
             System.out.println(i);
         });
 
+        System.out.println("--------");
+        
         invertirLista(lista).stream().forEach((i) -> {
             System.out.println(i);
         });
