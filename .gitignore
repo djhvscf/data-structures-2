@@ -22,3 +22,5 @@ Factorial/nbproject/project.xml
 *.xml
 /MCD/nbproject/private/
 /MCD/build/
+/EsPrimo/nbproject/private/
+/EsPrimo/build/
