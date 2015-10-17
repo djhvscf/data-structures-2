@@ -15,7 +15,7 @@ import java.awt.Panel;
 public class CuatroEnRaya extends Applet {
 
     public final static int ESPERANDO_QUE_MUEVAS = 0;
-    public final static int PENSANDO  = 1;
+    public final static int PENSANDO = 1;
     public final static int VOLVER_A_EMPEZAR = 2;
     public final static int ANCHURA_BORDE = 5;
     Busqueda c4k;
