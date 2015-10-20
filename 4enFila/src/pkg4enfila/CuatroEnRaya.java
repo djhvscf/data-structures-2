@@ -193,7 +193,7 @@ public class CuatroEnRaya extends Applet {
             // get columna by position of mouse click
             Dimension d = size();
             c = (( x - ANCHURA_BORDE) * 7) / d.width;
-            if(c<0 || c>6) {
+            if(c < 0 || c > 6) {
                 break juego;
             }
             if(c4k.EstaVacio(c)) {
