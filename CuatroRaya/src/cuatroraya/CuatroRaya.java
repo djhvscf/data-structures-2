@@ -265,11 +265,11 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
         if (jugador == (-1)) {
             victorias++;
             if (unjugador) {
-                s = "GANASTE JUGADOR 1";
+                s = "GANÓ JUGADOR 1";
                 Victorias.setText("Victorias: " + Integer.toString(victorias));
                 Derrotas.setText("Derrotas: " + Integer.toString(derrotas));
             } else {
-                s = "GANASTE JUGADOR 1";
+                s = "GANÓ JUGADOR 1";
                 Victorias.setText("Victorias J1: " + Integer.toString(victorias));
                 Derrotas.setText("Victorias J2: " + Integer.toString(derrotas));
             }
@@ -280,23 +280,20 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
                 Victorias.setText("Victorias: " + Integer.toString(victorias));
                 Derrotas.setText("Derrotas: " + Integer.toString(derrotas));
             } else {
-                s = "GANASTE JUGADOR 2";
+                s = "GANÓ JUGADOR 2";
                 Victorias.setText("Victorias J1: " + Integer.toString(victorias));
                 Derrotas.setText("Victorias J2: " + Integer.toString(derrotas));
             }
         }
 
-        CuadroDialogo dig = new CuadroDialogo(this, s);
-        //g.setColor(Color.white);
-        //g.setFont (new Font ("Impact",10,60));
-        //g.drawString(100,333,s);
-
         jugando = false;
-        dig.setLocation(300, 10);
-        dig.setVisible(true);
+        
+        Ganador winner = new Ganador(s);
+        
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
+            
         }
     }
 
@@ -402,36 +399,5 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
     @Override
     public void mouseExited(MouseEvent e) {
         //Logic here
-    }
-}
-
-class CuadroDialogo extends Dialog {
-
-    Button aceptar = new Button("OK");
-    Label texto = new Label();
-
-    CuadroDialogo(Frame f, String s) {
-        super(f, "informacion");
-        setSize(400, 100);
-        setResizable(false);
-        setBackground(Color.white);
-        texto.setText(s);
-        add("North", texto);
-        add("South", aceptar);
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        g.setColor(Color.white);
-        g.drawString("paint", 50, 50);
-    }
-
-    @Override
-    public boolean action(Event evt, Object obj) {
-        if (evt.target == aceptar) {
-            dispose();
-            return true;
-        }
-        return false;
     }
 }
