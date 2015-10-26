@@ -49,7 +49,7 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
         });
     }
 
-    public void PintaCasilla(int x) {
+    public void PintarCelda(int x) {
         Graphics g = getGraphics();
         int Resultados[][] = new int[3][3];
         int result;
@@ -78,16 +78,16 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
             Turno++;
             Jugadas.setText("Jugadas: " + Integer.toString(Turno));
 
-            if (CompruebaCasilla(x, y, Resultados)) {
-                Ganaste(tablero[x][y]);
+            if (ComprobarCelda(x, y, Resultados)) {
+                Ganador(tablero[x][y]);
             } else {
                 if (Turno % 2 != 0) {
                     if (unjugador) {
-                        result = JuegaIA(0);
+                        result = JugarPC(0);
                         if (result >= 10) {
-                            PintaCasilla((result / 10) - 1);
+                            PintarCelda((result / 10) - 1);
                         } else {
-                            PintaCasilla(result);
+                            PintarCelda(result);
                         }
                     }
                 }
@@ -95,12 +95,12 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
         }
     }
     
-    public boolean CompruebaCasilla(int posx, int posy, int cuantas[][]) {
+    public boolean ComprobarCelda(int posx, int posy, int cuantas[][]) {
         int x, y;
         for (x = (-1); x < 2; x++) {
             for (y = (-1); y < 2; y++) {
                 if (x != 0 || y != 0) {
-                    cuantas[x + 1][y + 1] = CompruebaLinea(posx, posy, x, y);
+                    cuantas[x + 1][y + 1] = ComprobarLinea(posx, posy, x, y);
                     if (cuantas[x + 1][y + 1] >= 4) {
                         return true;
                     }
@@ -110,7 +110,7 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
         return false;
     }
 
-    public int CompruebaLinea(int posx, int posy, int x, int y) {
+    public int ComprobarLinea(int posx, int posy, int x, int y) {
         int tempx, tempy;
         int cuantas = 1;
         int jugador = tablero[posx][posy];
@@ -140,19 +140,17 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
     }
 
     //* *************************LÓGICA PC**************************
-    public int JuegaIA(int Nveces) {
-        int ValoresEl[][] = new int[3][3];
-        int ValoresYo[][] = new int[3][3];
-        int PuntosCasilla[] = new int[7];
-        int x, y, casilla;
+    public int JugarPC(int cantVeces) {
+        int valoresEl[][] = new int[3][3];
+        int valoresYo[][] = new int[3][3];
+        int puntosPorCelda[] = new int[7];
+        int x, y, celda;
         int z;
         boolean mayor;
         
-        //Recorreré cada casilla en busca de la mejor opción
-        for (casilla = 0; casilla < 7; casilla++) {
-            //calculo la y actual para cada casilla
+        for (celda = 0; celda < 7; celda++) {
             z = 0;
-            while (tablero[casilla][z] == 0) {
+            while (tablero[celda][z] == 0) {
                 z++;
                 if (z == 7) {
                     break;
@@ -163,91 +161,84 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
             } else {
                 y = z - 1;
                 
-                //Una casilla recibe puntos por altura, un factor semialeatorio, para evitar
-                //bucles infinitos
-                PuntosCasilla[casilla] += y;
-                //otro factor aleatorio	para evitar atascos
-                PuntosCasilla[casilla] += Nveces % (casilla + 1);
+                puntosPorCelda[celda] += y;
+                puntosPorCelda[celda] += cantVeces % (celda + 1);
 
-                //Obtengo mis valores para esa jugada simulando la colocación de una ficha
-                tablero[casilla][y] = 1;
-                CompruebaCasilla(casilla, y, ValoresYo);
+                tablero[celda][y] = 1;
+                ComprobarCelda(celda, y, valoresYo);
 
-                tablero[casilla][y] = -1;
-                //Obtengo los resultados que el tendría con esa jugada simulando
-                CompruebaCasilla(casilla, y, ValoresEl);
-                tablero[casilla][y] = 0;
+                tablero[celda][y] = -1;
 
-                //valoro mucho si yo gano(1000) o si el gana(100)
+                ComprobarCelda(celda, y, valoresEl);
+                tablero[celda][y] = 0;
+
                 for (x = 0; x < 3; x++) {
                     for (z = 0; z < 3; z++) {
-                        if (ValoresYo[x][z] >= 4) {
-                            PuntosCasilla[casilla] += 1000;
+                        if (valoresYo[x][z] >= 4) {
+                            puntosPorCelda[celda] += 1000;
                         }
-                        if (ValoresEl[x][z] >= 4) {
-                            PuntosCasilla[casilla] += 100;
+                        if (valoresEl[x][z] >= 4) {
+                            puntosPorCelda[celda] += 100;
                         }
-                        if (ValoresYo[x][z] == 3 && Nveces < 3) {
-                            tablero[casilla][y] = 1;
+                        if (valoresYo[x][z] == 3 && cantVeces < 3) {
+                            tablero[celda][y] = 1;
 
-                            if (JuegaIA(Nveces + 1) > 10) {
-                                PuntosCasilla[casilla] += 90;
+                            if (JugarPC(cantVeces + 1) > 10) {
+                                puntosPorCelda[celda] += 90;
                             } else {
-                                PuntosCasilla[casilla] += 5;
+                                puntosPorCelda[celda] += 5;
                             }
 
-                            tablero[casilla][y] = 0;
+                            tablero[celda][y] = 0;
                         }
-                        if (ValoresEl[x][z] == 3 && Nveces < 3) {
-                            tablero[casilla][y] = (-1);
+                        if (valoresEl[x][z] == 3 && cantVeces < 3) {
+                            tablero[celda][y] = (-1);
                             
-                            if (JuegaIA(Nveces + 1) > 10) {
-                                PuntosCasilla[casilla] += 100;
+                            if (JugarPC(cantVeces + 1) > 10) {
+                                puntosPorCelda[celda] += 100;
                             } else {
-                                PuntosCasilla[casilla] += 10;
+                                puntosPorCelda[celda] += 10;
                             }
-                            tablero[casilla][y] = 0;
+                            tablero[celda][y] = 0;
                         }
-                        if (ValoresYo[x][z] == 2) {
-                            PuntosCasilla[casilla] += 5;
+                        if (valoresYo[x][z] == 2) {
+                            puntosPorCelda[celda] += 5;
                         }
                     }
                 }
                 
                 if (y > 0) {
-                    tablero[casilla][y - 1] = (1);
-                    CompruebaCasilla(casilla, y - 1, ValoresYo);
+                    tablero[celda][y - 1] = (1);
+                    ComprobarCelda(celda, y - 1, valoresYo);
 
-                    tablero[casilla][y - 1] = (-1);
-                    CompruebaCasilla(casilla, y - 1, ValoresEl);
-                    tablero[casilla][y - 1] = 0;
+                    tablero[celda][y - 1] = (-1);
+                    ComprobarCelda(celda, y - 1, valoresEl);
+                    tablero[celda][y - 1] = 0;
                 }
                 
                 for (x = 0; x < 3; x++) {
                     for (z = 0; z < 3; z++) {
-                        if (ValoresYo[x][z] >= 4) {
-                            PuntosCasilla[casilla] -= 10;
+                        if (valoresYo[x][z] >= 4) {
+                            puntosPorCelda[celda] -= 10;
                         }
 
-                        if (ValoresEl[x][z] >= 4) {
-                            PuntosCasilla[casilla] -= 100;
+                        if (valoresEl[x][z] >= 4) {
+                            puntosPorCelda[celda] -= 100;
                         }
                     }
                 }
             }
         }
-	
-        //Tenemos los tanteos de cada casilla
-        //así que vamos a ver cual tiene mayor puntuación y colocar en ella
+
         z = 0;
         for (y = 0; y < 7; y++) {
             mayor = true;
             for (x = 0; x < 7; x++) {
-                if (PuntosCasilla[y] < PuntosCasilla[x]) {
+                if (puntosPorCelda[y] < puntosPorCelda[x]) {
                     mayor = false;
                 }
             }
-            if (mayor == true) {
+            if (mayor) {
                 if (z != 0) {
                     z = y * 10;
                 } else {
@@ -255,32 +246,32 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
                 }
             }
         }
-        System.out.println("" + Arrays.deepToString(ValoresEl));
+        System.out.println("" + Arrays.deepToString(valoresEl));
         return (z);
     }
     //* *************************LÓGICA PC**************************
     
-    public void Ganaste(int jugador) {
-        String s;
+    public void Ganador(int jugador) {
+        String quienGana;
         if (jugador == (-1)) {
             victorias++;
             if (unjugador) {
-                s = "GANÓ JUGADOR 1";
+                quienGana = "GANÓ JUGADOR 1";
                 Victorias.setText("Victorias: " + Integer.toString(victorias));
                 Derrotas.setText("Derrotas: " + Integer.toString(derrotas));
             } else {
-                s = "GANÓ JUGADOR 1";
+                quienGana = "GANÓ JUGADOR 1";
                 Victorias.setText("Victorias J1: " + Integer.toString(victorias));
                 Derrotas.setText("Victorias J2: " + Integer.toString(derrotas));
             }
         } else {
             derrotas++;
             if (unjugador) {
-                s = "GANÓ LA PC";
+                quienGana = "GANÓ LA PC";
                 Victorias.setText("Victorias: " + Integer.toString(victorias));
                 Derrotas.setText("Derrotas: " + Integer.toString(derrotas));
             } else {
-                s = "GANÓ JUGADOR 2";
+                quienGana = "GANÓ JUGADOR 2";
                 Victorias.setText("Victorias J1: " + Integer.toString(victorias));
                 Derrotas.setText("Victorias J2: " + Integer.toString(derrotas));
             }
@@ -288,7 +279,8 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
 
         jugando = false;
         
-        Ganador winner = new Ganador(s);
+        Ganador winner;
+        winner = new Ganador(quienGana);
         
         try {
             Thread.sleep(1000);
@@ -315,7 +307,7 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
         }
     }
 
-    public void ReStart() {
+    public void Reiniciar() {
         Graphics g = getGraphics();
         int x;
         int y;
@@ -341,8 +333,7 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
         cuatroRaya.setSize(750, 690);
         cuatroRaya.setResizable(false);
         cuatroRaya.setVisible(true);
-        cuatroRaya.ReStart();
-        
+        cuatroRaya.Reiniciar();
     }
 
     @Override
@@ -359,7 +350,7 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
                 Modo.setText("Un Jugador");
                 unjugador = false;
             }
-            this.ReStart();
+            this.Reiniciar();
         }
     }
 
@@ -370,14 +361,14 @@ public class CuatroRaya extends Frame implements MouseListener, ActionListener {
         
         if (jugando) {
             z = (z - 10) / 90;
-            PintaCasilla(z);
+            PintarCelda(z);
         }
         if (me.getSource() == Salir) {
             System.exit(0);
         }
 
         if (me.getSource() == Comienza) {
-            ReStart();
+            Reiniciar();
         }
     }
 
